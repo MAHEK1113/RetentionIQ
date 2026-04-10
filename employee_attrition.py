@@ -20,9 +20,9 @@ from sklearn.metrics import (accuracy_score, classification_report,
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 
-# ============================================================
+
 # STEP 2 — LOAD DATASET
-# ============================================================
+
 url = (
     "https://raw.githubusercontent.com/dsrscientist/"
     "dataset1/master/HR_comma_sep.csv"
@@ -55,9 +55,8 @@ print("\nFirst 5 rows:")
 print(df.head())
 print("\nColumn names:", df.columns.tolist())
 
-# ============================================================
 # STEP 3 — DATA EXPLORATION
-# ============================================================
+
 print("\n--- Dataset Info ---")
 print(df.info())
 
@@ -69,9 +68,9 @@ attrition_col = 'Attrition' if 'Attrition' in df.columns else 'left'
 print(df[attrition_col].value_counts())
 print(df[attrition_col].value_counts(normalize=True).mul(100).round(2), "%")
 
-# ============================================================
+
 # STEP 4 — DATA CLEANING
-# ============================================================
+
 # Drop duplicates
 before = len(df)
 df.drop_duplicates(inplace=True)
@@ -84,9 +83,9 @@ for col in df.select_dtypes(include='number').columns:
 for col in df.select_dtypes(include='object').columns:
     df[col].fillna(df[col].mode()[0], inplace=True)
 
-# ============================================================
+
 # STEP 5 — ENCODING
-# ============================================================
+
 df_encoded = df.copy()
 
 # Encode target
@@ -105,9 +104,9 @@ for col in df_encoded.select_dtypes(include=['object']).columns:
 
 print("\nEncoded dataframe shape:", df_encoded.shape)
 
-# ============================================================
+
 # STEP 6 — FEATURE SCALING & SPLIT
-# ============================================================
+
 X = df_encoded.drop(target_col, axis=1)
 y = df_encoded[target_col]
 
@@ -120,9 +119,9 @@ X_train, X_test, y_train, y_test = train_test_split(
 
 print(f"\nTrain size: {X_train.shape[0]}  |  Test size: {X_test.shape[0]}")
 
-# ============================================================
+
 # STEP 7 — MODEL TRAINING
-# ============================================================
+
 models = {
     "Logistic Regression": LogisticRegression(max_iter=1000, random_state=42),
     "Random Forest":       RandomForestClassifier(n_estimators=100, random_state=42),
@@ -155,9 +154,9 @@ best_name = max(results, key=lambda k: results[k]["roc_auc"])
 best = results[best_name]
 print(f"\nBest model by ROC-AUC: {best_name} ({best['roc_auc']:.4f})")
 
-# ============================================================
+
 # STEP 8 — FEATURE IMPORTANCE
-# ============================================================
+
 rf_model = results["Random Forest"]["model"]
 importances = pd.DataFrame({
     "Feature":    X.columns,
@@ -167,9 +166,9 @@ importances = pd.DataFrame({
 print("\nTop 10 Features (Random Forest):")
 print(importances.to_string(index=False))
 
-# ============================================================
+
 # STEP 9 — HR KPI DASHBOARD (matplotlib)
-# ============================================================
+
 plt.style.use("seaborn-v0_8-whitegrid")
 fig = plt.figure(figsize=(18, 14))
 fig.suptitle("HR Attrition Analysis Dashboard", fontsize=20, fontweight="bold", y=0.98)
@@ -253,9 +252,8 @@ plt.savefig("hr_attrition_dashboard.png", dpi=150, bbox_inches="tight")
 plt.show()
 print("\nDashboard saved as 'hr_attrition_dashboard.png'")
 
-# ============================================================
 # STEP 10 — ATTRITION RISK SCORER (bonus utility)
-# ============================================================
+
 def predict_attrition_risk(employee_data: dict) -> dict:
     """
     Pass a dict of employee features, get back a risk score.
